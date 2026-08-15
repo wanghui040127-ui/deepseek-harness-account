@@ -19,11 +19,11 @@
 
 ## 安装
 
-### 复制安装（推荐，无需改写入 app 包）
+### 方式一：通过插件市场安装（推荐）
 
-把本插件放到目标 profile 的 `node_modules`，并在 `cordis.patch.yml` 注册即可。由于标准版内置了同款「账户」区段，安装脚本还会往 profile 里放一份**去掉了内置 account 区段的 `dsh-client-ui-settings-general` 覆盖包**，用它遮蔽宿主内置的那份，从而只保留本插件的账户区段，避免重复。应用重启后生效。
+直接在 DeepSeek Harness 的设置 -> 插件管理页面，搜索 **dsh-account** 即可一键安装，无需手动下载。
 
-一键脚本（在插件目录内执行）：
+### 方式二：一键脚本安装
 
 ```bash
 ./install.sh
@@ -31,22 +31,19 @@
 ./install.sh "$HOME/Library/Application Support/com.dsh.studio" web
 ```
 
-脚本会：
-1. 把插件包复制到 `<DSH_HOME>/profiles/<profile>/node_modules/@deepseek-ai/dsh-account/`；
-2. 把去除内置 account 区段的覆盖包复制到 `<DSH_HOME>/profiles/<profile>/node_modules/@deepseek-ai/dsh-client-ui-settings-general/`（遮蔽宿主内置版本，仅禁用账户区段，其余设置区段不受影响）；
-3. 向 `<DSH_HOME>/profiles/<profile>/cordis.patch.yml` 追加 loader 条目（已存在则跳过）。
+脚本会复制插件包、添加覆盖包（去除内置 account 区段避免重复），并在 `cordis.patch.yml` 注册。
 
-### 手动安装
+### 方式三：手动安装
 
 ```bash
 # 1. 复制插件包
 mkdir -p "$DSH_HOME/profiles/web/node_modules/@deepseek-ai/dsh-account"
 cp -R packages/dsh-account/package.json packages/dsh-account/lib "$DSH_HOME/profiles/web/node_modules/@deepseek-ai/dsh-account/"
 
-# 2. 复制去除内置 account 区段的覆盖包（遮蔽宿主内置版本）
+# 2. 复制覆盖包（去除内置 account 区段，避免重复显示）
 cp -R packages/dsh-client-ui-settings-general "$DSH_HOME/profiles/web/node_modules/@deepseek-ai/dsh-client-ui-settings-general"
 
-# 3. 在 cordis.patch.yml 追加（若没有 dsh-account 条目）
+# 3. 在 cordis.patch.yml 追加
 cat >> "$DSH_HOME/profiles/web/cordis.patch.yml" <<'EOF'
 
 - insert:
@@ -58,7 +55,6 @@ EOF
 ### 生效
 
 重启 DeepSeek Harness 应用，打开「设置」→ 左侧浮出面板中的 **账户 / Account** 标签。
-
 ## 使用
 
 1. 打开设置面板，点击「账户」。
